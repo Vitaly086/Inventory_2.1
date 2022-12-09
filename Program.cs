@@ -44,15 +44,15 @@
                                   "3 - Вернуться обратно.\n");
 
                 // Считываем выбор пользователя.
-                var firstChoice = Convert.ToInt32(Console.ReadLine());
-
-                // Создаем новый инвентарь.
-                var inventory = CreateNewInventory((InventoryChoice) firstChoice);
-                // Если инвентарь равен null, возвращаемся в главное меню.
-                if (inventory == null)
+                var firstChoice = (InventoryChoice) Convert.ToInt32(Console.ReadLine());
+                // Выходим, если пользователь выбрал даннйы кейс.
+                if (firstChoice == InventoryChoice.Exit)
                 {
                     return;
                 }
+
+                // Создаем новый инвентарь.
+                var inventory = CreateNewInventory(firstChoice);
 
                 // Компании добавляем новый инвентарь.
                 company.AddInventory(inventory);
@@ -65,15 +65,15 @@
                                   "2 - Вернуться обратно.\n");
 
                 // Считываем выбор пользователя.
-                var secondChoice = Convert.ToInt32(Console.ReadLine());
-
-                // Создаем нового сотрудника.
-                var employee = CreateNewEmployees((EmployeeChoice) secondChoice);
-                // Если сотрудник равен null, возвращаемся в главное меню.
-                if (employee == null)
+                var secondChoice = (EmployeeChoice) Convert.ToInt32(Console.ReadLine());
+                // Выходим, если пользователь выбрал даннйы кейс.
+                if (secondChoice == EmployeeChoice.Exit)
                 {
                     return;
                 }
+
+                // Создаем нового сотрудника.
+                var employee = CreateNewEmployees(secondChoice);
 
                 // Компании добавляем нового сотрудника.
                 company.AddEmployee(employee);
@@ -138,10 +138,6 @@
                 inventory = new Technique(techniqueName, model);
                 break;
 
-            // Кейс выхода в главное меню.
-            case InventoryChoice.Exit:
-                break;
-
             // Кейс по умолчанию, в случае неправильного ввода.
             default:
                 Console.WriteLine($"Неверный запрос.\n" +
@@ -170,10 +166,6 @@
                 var jomTitle = Console.ReadLine();
                 // Создаем объект класса Сотрудник.
                 employee = new Employee(name, jomTitle);
-                break;
-
-            // Кейс выхода в главное меню.
-            case EmployeeChoice.Exit:
                 break;
 
             // Кейс по умолчанию, в случае неправильного ввода.
@@ -235,7 +227,7 @@
                 // Останавливаем цикл, если индекс правильный.
                 break;
             }
-            
+
             // В случае ошибки выводим сообщение на экран.
             Console.WriteLine("Номер предмета выбран не верно, выберите еще раз.");
         }
