@@ -1,4 +1,6 @@
-﻿public class Program
+﻿using System.Text;
+
+public class Program
 {
     static void Main(string[] args)
     {
@@ -10,6 +12,7 @@
     }
 
     // Метод показывающий меню действий.
+
     private static void ShowSelectionMenu(Company company)
     {
         // В бесконечном цикле будем принимать запросы и отвечать на них.
@@ -30,6 +33,7 @@
     }
 
     // Метод определяющий, какое действие выполнять.
+
     private static void ProcessSelectedMenuAction(MainMenuChoice userChoice, Company company)
     {
         // В зависимости от выбора пользователя - вызываем нужный метод.
@@ -76,6 +80,7 @@
         if (!company.HasInventories())
         {
             Console.WriteLine("На складе нет предметов, сначала добавьте предмет.");
+            return;
         }
 
         // Выбираем индекс инвентаря, который будем добавлять сотруднику.
@@ -291,6 +296,46 @@ public enum EmployeeChoice
 }
 
 /// <summary>
+/// Класс отвечающий за запись информации в файл.
+/// </summary>
+public static class FileWriter
+{
+    // Константа для сохранения названия файла.
+    private const string FILE_NAME = "inventory.txt";
+    // Путь к файлу.
+    private static string _filePath;
+
+    //Статический конструктор, вызвается один раз, создает файл.
+    static FileWriter()
+    {
+        // Записываем путь к файлу, используя базовую директорию и имя файла.
+        _filePath = AppContext.BaseDirectory + "\\" + FILE_NAME;
+        // Создаем новый файл.
+        var file = new FileStream(_filePath, FileMode.Create, FileAccess.ReadWrite);
+        // Закрываем файл.
+        file.Close();
+    }
+
+
+    // Метод записывает текст в файл/ 
+    public static void Write(string text)
+    {
+        var writer = File.AppendText(_filePath);
+        writer.Write(text);
+        writer.Close();
+    }
+
+    // Метод записывает текст в файл с новой сnроки.
+    public static void WriteLine(string text)
+    {
+        var writer = File.AppendText(_filePath);
+        writer.WriteLine(text);
+        writer.Close();
+    }
+}
+
+
+/// <summary>
 /// Класс Компания содержит склад и список сотрудников.
 /// Выдает сотрудникам инвентарь, проводит инвентаризацию.
 /// </summary>
@@ -334,7 +379,12 @@ public class Company
         // Проверяем, есть ли сорудники в компании.
         if (!HasEmployees())
         {
-            Console.WriteLine("В компании нет сотрудников, сначала добавьте сотрудника.");
+            // Записываем сообщение в переменную.
+            var hasNotEmployeesMessage = "В компании нет сотрудников, сначала добавьте сотрудника.";
+            // Выводим сообщение на экран.
+            Console.WriteLine(hasNotEmployeesMessage);
+            // Записываем сообщение в файл.
+            FileWriter.WriteLine(hasNotEmployeesMessage);
             return;
         }
 
@@ -343,18 +393,28 @@ public class Company
             // Проверяем, выдан ли сотруднику предмет.
             if (!employee.HasInventory())
             {
-                // Если не выдан выводим сообщение на экран.
-                Console.WriteLine($"Сотрудник {employee.Name}, должность {employee.JobTitle}, предметы не получал.");
+                // Записываем сообщение в переменную.
+                var employeeNotHasInventoryMessage =
+                    $"Сотрудник {employee.Name}, должность {employee.JobTitle}, предметы не получал.";
+                // Выводим сообщение на экран.
+                Console.WriteLine(employeeNotHasInventoryMessage);
+                // Записываем сообщение в файл.
+                FileWriter.WriteLine(employeeNotHasInventoryMessage);
                 // Пропускаем иттерацию в цикле.
                 continue;
             }
 
-            // Выводим на экран сотрудника и его должность.
-            Console.WriteLine(
-                $"Сотрудник {employee.Name}, должность {employee.JobTitle}, получил следующие предметы: ");
+            // Записываем сообщение в переменную.
+            var employeeHasInventoryMessage =
+                $"Сотрудник {employee.Name}, должность {employee.JobTitle}, получил следующие предметы:";
+            // Выводим сообщение на экран.
+            Console.WriteLine(employeeHasInventoryMessage);
+            // Записываем сообщение в файл.
+            FileWriter.WriteLine(employeeHasInventoryMessage);
             // Выводим на экран предметы выданные сотруднику.
             employee.PrintInventory();
             Console.WriteLine();
+            FileWriter.WriteLine("");
         }
     }
 
@@ -519,8 +579,12 @@ public class Employee
     {
         for (var i = 0; i < _inventories.Count; i++)
         {
-            // Вывод индекса для нумерации.
-            Console.Write($"{i + 1}. ");
+            // Индекса для нумерации.
+            var indexMessage = $"{i + 1}. ";
+            // Выводим сообщение в консоль.
+            Console.Write(indexMessage);
+            // Записываем сообщение в файл.
+            FileWriter.Write(indexMessage);
             // Выводим данные инвентаря.
             _inventories[i].Print();
         }
@@ -562,7 +626,12 @@ public abstract class Inventory
     // Виртуальный метод выводит базовую информацию об инвентаре.
     public virtual void Print()
     {
-        Console.Write($"Предмет: {Name}. ");
+        // Сохраняем сообщение в переменну.
+        var inventoryNameMessage = $"Предмет: {Name}. ";
+        // Выводим сообщение в консоль.
+        Console.Write(inventoryNameMessage);
+        // Записываем сообщение в файл.
+        FileWriter.Write(inventoryNameMessage);
     }
 }
 
@@ -583,11 +652,16 @@ public class Furniture : Inventory
     }
 
     // Переопределенный метод вызывает базовый метод класса и выводит дополнительную информацию о мебели.
-    public override void Print()
+    public override async void Print()
     {
         // Вызов базового метода класса.
         base.Print();
-        Console.WriteLine($"Цвет: {_color}, Инвентарный номер: {InventoryNumber}.");
+        // Сохраняем сообщение в переменну.
+        var furnitureInfoMessage = $"Цвет: {_color}, Инвентарный номер: {InventoryNumber}.";
+        // Выводим сообщение в консоль.
+        Console.WriteLine(furnitureInfoMessage);
+        // Записываем сообщение в файл.
+        FileWriter.WriteLine(furnitureInfoMessage);
     }
 }
 
@@ -612,6 +686,11 @@ public class Technique : Inventory
     {
         // Вызов базового метода класса.
         base.Print();
-        Console.WriteLine($"Модель: {_model}, Инвентарный номер: {InventoryNumber}.");
+        // Сохраняем сообщение в переменну.
+        var techniqueInfoMessage = $"Модель: {_model}, Инвентарный номер: {InventoryNumber}.";
+        // Выводим сообщение в консоль.
+        Console.WriteLine(techniqueInfoMessage);
+        // Записываем сообщение в файл.
+        FileWriter.WriteLine(techniqueInfoMessage);
     }
 }
