@@ -38,17 +38,17 @@
         {
             // Кейс добавления нового инвентаря.
             case MainMenuChoice.AddNewInventory:
-                AddInventoryCase(company);
+                AddNewInventory(company);
                 return;
 
             // Кейс добавления нового сотрудника.
             case MainMenuChoice.AddNewEmployee:
-                AddEmployeeCase(company);
+                AddNewEmployee(company);
                 return;
 
             // Кейс выдачи инвентаря сотруднику.
             case MainMenuChoice.GiveInventoryToEmployee:
-                GiveInventoryToEmployeeCase(company);
+                GiveInventoryToEmployee(company);
                 return;
             // Кейс проводит инвентаризацию.
             case MainMenuChoice.MakeInventory:
@@ -63,7 +63,7 @@
     }
 
     // Метод считывает выбор пользователя и добавляет выбранному сотруднику - выбранный инвентарь.
-    private static void GiveInventoryToEmployeeCase(Company company)
+    private static void GiveInventoryToEmployee(Company company)
     {
         // Проверяем, есть ли в компании сотрудники.
         if (!company.HasEmployees())
@@ -76,6 +76,7 @@
         if (!company.HasInventories())
         {
             Console.WriteLine("На складе нет предметов, сначала добавьте предмет.");
+            return;
         }
 
         // Выбираем индекс инвентаря, который будем добавлять сотруднику.
@@ -88,7 +89,7 @@
     }
 
     // Метод считывает выбор пользователя и добавляет нового сотрудника.
-    private static void AddEmployeeCase(Company company)
+    private static void AddNewEmployee(Company company)
     {
         Console.WriteLine("Выберите нужный пункт меню:");
         Console.WriteLine("1 - Добавить нового сотрудника.\n" +
@@ -121,7 +122,7 @@
     }
 
     // Метод считывает выбор пользователя и добавляет новый инвентарь.
-    private static void AddInventoryCase(Company company)
+    private static void AddNewInventory(Company company)
     {
         Console.WriteLine("Выберите нужный пункт меню:");
         Console.WriteLine("1 - Добавить Мебель.\n" +
@@ -146,7 +147,7 @@
     // Метод создает новый инветарь.
     private static Inventory CreateInventory(InventoryChoice choice)
     {
-        // Создаем пустую переменную типа Инвентарь, чтобы записать в нее нового сотрудника.
+        // Создаем пустую переменную типа Инвентарь, чтобы записать в нее новый ивентарь.
         Inventory inventory = null;
         switch (choice)
         {
