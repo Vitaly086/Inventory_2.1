@@ -38,63 +38,18 @@
         {
             // Кейс добавления нового инвентаря.
             case MainMenuChoice.AddNewInventory:
-                Console.WriteLine("Выберите нужный пункт меню:");
-                Console.WriteLine("1 - Добавить Мебель.\n" +
-                                  "2 - Добавить Технику.\n" +
-                                  "3 - Вернуться обратно.\n");
-
-                // Считываем выбор пользователя.
-                var firstChoice = (InventoryChoice) Convert.ToInt32(Console.ReadLine());
-                // Выходим, если пользователь выбрал даннйы кейс.
-                if (firstChoice == InventoryChoice.Exit)
-                {
-                    return;
-                }
-
-                // Создаем новый инвентарь.
-                var inventory = CreateNewInventory(firstChoice);
-
-                // Компании добавляем новый инвентарь.
-                company.AddInventory(inventory);
-                break;
+                AddInventoryCase(company);
+                return;
 
             // Кейс добавления нового сотрудника.
             case MainMenuChoice.AddNewEmployee:
-                Console.WriteLine("Выберите нужный пункт меню:");
-                Console.WriteLine("1 - Добавить нового сотрудника.\n" +
-                                  "2 - Вернуться обратно.\n");
-
-                // Считываем выбор пользователя.
-                var secondChoice = (EmployeeChoice) Convert.ToInt32(Console.ReadLine());
-                // Выходим, если пользователь выбрал даннйы кейс.
-                if (secondChoice == EmployeeChoice.Exit)
-                {
-                    return;
-                }
-
-                // Создаем нового сотрудника.
-                var employee = CreateNewEmployees(secondChoice);
-
-                // Компании добавляем нового сотрудника.
-                company.AddEmployee(employee);
-                break;
+                AddEmployeeCase(company);
+                return;
 
             // Кейс выдачи инвентаря сотруднику.
             case MainMenuChoice.GiveInventoryToEmployee:
-                // Проверяем, есть ли в компании инвентарь или сотрудники.
-                if (!company.HasInventories() || !company.HasEmployees())
-                {
-                    return;
-                }
-
-                // Выбираем индекс инвентаря, который будем добавлять сотруднику.
-                var employeeIndex = ChooseEmployeeIndex(company);
-                // Выбираем индекс сотруднка, которому будем добавлять инвентарь.
-                var inventoryIndex = ChooseInventory(company);
-
-                // Выдаем инветарь сотруднику.
-                company.GiveInventoryToEmployee(employeeIndex, inventoryIndex);
-                break;
+                GiveInventoryToEmployeeCase(company);
+                return;
             // Кейс проводит инвентаризацию.
             case MainMenuChoice.MakeInventory:
                 company.MakeInventory();
@@ -107,8 +62,89 @@
         }
     }
 
+    // Метод считывает выбор пользователя и добавляет выбранному сотруднику - выбранный инвентарь.
+    private static void GiveInventoryToEmployeeCase(Company company)
+    {
+        // Проверяем, есть ли в компании сотрудники.
+        if (!company.HasEmployees())
+        {
+            Console.WriteLine("В компании нет сотрудников, сначала добавьте сотрудника.");
+            return;
+        }
+
+        // Проверяем, есть ли в компании инвентарь.
+        if (!company.HasInventories())
+        {
+            Console.WriteLine("На складе нет предметов, сначала добавьте предмет.");
+        }
+
+        // Выбираем индекс инвентаря, который будем добавлять сотруднику.
+        var employee = ChooseEmployee(company);
+        // Выбираем индекс сотруднка, которому будем добавлять инвентарь.
+        var inventory = ChooseInventory(company);
+
+        // Выдаем инветарь сотруднику.
+        company.GiveInventoryToEmployee(employee, inventory);
+    }
+
+    // Метод считывает выбор пользователя и добавляет нового сотрудника.
+    private static void AddEmployeeCase(Company company)
+    {
+        Console.WriteLine("Выберите нужный пункт меню:");
+        Console.WriteLine("1 - Добавить нового сотрудника.\n" +
+                          "2 - Вернуться обратно.\n");
+
+
+        // Считываем выбор пользователя.
+        var employeeChoice = (EmployeeChoice) Convert.ToInt32(Console.ReadLine());
+
+        switch (employeeChoice)
+        {
+            // Кейс создания нового сотрудника.
+            case EmployeeChoice.Employee:
+                var employee = CreateEmployee();
+
+                // Компании добавляем нового сотрудника.
+                company.AddEmployee(employee);
+                break;
+
+            // Кейс выхода.
+            case EmployeeChoice.Exit:
+                return;
+
+            // Кейс по умолчанию, в случае неправильного ввода.
+            default:
+                Console.WriteLine($"Неверный запрос.\n" +
+                                  $"Возврат в основное меню.\n");
+                break;
+        }
+    }
+
+    // Метод считывает выбор пользователя и добавляет новый инвентарь.
+    private static void AddInventoryCase(Company company)
+    {
+        Console.WriteLine("Выберите нужный пункт меню:");
+        Console.WriteLine("1 - Добавить Мебель.\n" +
+                          "2 - Добавить Технику.\n" +
+                          "3 - Вернуться обратно.\n");
+
+        // Считываем выбор пользователя.
+        var inventoryChoice = (InventoryChoice) Convert.ToInt32(Console.ReadLine());
+        // Выходим, если пользователь выбрал даннйы кейс.
+        if (inventoryChoice == InventoryChoice.Exit)
+        {
+            return;
+        }
+
+        // Создаем новый инвентарь.
+        var inventory = CreateInventory(inventoryChoice);
+
+        // Компании добавляем новый инвентарь.
+        company.AddInventory(inventory);
+    }
+
     // Метод создает новый инветарь.
-    private static Inventory CreateNewInventory(InventoryChoice choice)
+    private static Inventory CreateInventory(InventoryChoice choice)
     {
         // Создаем пустую переменную типа Инвентарь, чтобы записать в нее нового сотрудника.
         Inventory inventory = null;
@@ -150,37 +186,24 @@
     }
 
     // Метод создает нового сотрудника.
-    private static Employee CreateNewEmployees(EmployeeChoice choice)
+    private static Employee CreateEmployee()
     {
-        // Создаем пустую переменную типа Сотрудник, чтобы записать в нее нового сотрудника.
-        Employee employee = null;
-        switch (choice)
-        {
-            // Кейс создания нового сотрудника.
-            case EmployeeChoice.Employee:
-                Console.WriteLine("Введите имя сотрудника.");
-                // Пользователь вводит имя сотрудника.
-                var name = Console.ReadLine();
-                Console.WriteLine("Введите должность сотрудника.");
-                // Пользователь вводит должность сотрудника.
-                var jomTitle = Console.ReadLine();
-                // Создаем объект класса Сотрудник.
-                employee = new Employee(name, jomTitle);
-                break;
+        // Кейс создания нового сотрудника.
+        Console.WriteLine("Введите имя сотрудника.");
+        // Пользователь вводит имя сотрудника.
+        var name = Console.ReadLine();
+        Console.WriteLine("Введите должность сотрудника.");
+        // Пользователь вводит должность сотрудника.
+        var jomTitle = Console.ReadLine();
+        // Создаем объект класса Сотрудник.
+        var employee = new Employee(name, jomTitle);
 
-            // Кейс по умолчанию, в случае неправильного ввода.
-            default:
-                Console.WriteLine($"Неверный запрос.\n" +
-                                  $"Возврат в основное меню.\n");
-                break;
-        }
-
-        // Возвращаем объект класса Техника.
+        // Возвращаем объект класса Сотрудник.
         return employee;
     }
 
     // Метод получает индекс сотрудника.
-    private static int ChooseEmployeeIndex(Company company)
+    private static Employee ChooseEmployee(Company company)
     {
         Console.WriteLine("Выберите сотрудника, которому выдадут предмет:");
 
@@ -205,11 +228,11 @@
         }
 
         // Возвращаем индекс сотрудника.
-        return employeeIndex;
+        return company.GetEmployee(employeeIndex);
     }
 
     // Метод выбирает индекс инвентаря.
-    private static int ChooseInventory(Company company)
+    private static Inventory ChooseInventory(Company company)
     {
         Console.WriteLine("Выберите предмет:");
 
@@ -233,7 +256,7 @@
         }
 
         // Возвращаем индекс инвентаря.
-        return inventoryIndex;
+        return company.GetInventory(inventoryIndex);
     }
 }
 
@@ -288,31 +311,30 @@ public class Company
         _employees.Add(employee);
     }
 
-// Метод добавляет инвентарь на склад.
+    // Метод добавляет инвентарь на склад.
     public void AddInventory(Inventory inventory)
     {
         // Добавляем инвентарь на склад.
         _storage.AddInventory(inventory);
     }
 
-// Метод выдает инвентарь сотруднику и удаляет его со склада.
-    public void GiveInventoryToEmployee(int employeeIndex, int inventoryIndex)
+    // Метод выдает инвентарь сотруднику.
+    public void GiveInventoryToEmployee(Employee employee, Inventory inventory)
     {
-        // Получаем инвентарь со склада.
-        var inventory = _storage.GetInventory(inventoryIndex);
         // Добавляем инвентарь работнику.
-        _employees[employeeIndex].AddInventory(inventory);
+        employee.AddInventory(inventory);
         // Выводим на экран данные сотрудника и предмета.
-        Console.WriteLine($"Сотруднику {_employees[employeeIndex].Name} выдан предмет {inventory.Name}," +
+        Console.WriteLine($"Сотруднику {employee.Name} выдан предмет {inventory.Name}," +
                           $" инвентарный номер {inventory.InventoryNumber}.");
     }
 
-// Метод проводит инвентаризацию предметов у сотрудников.
+    // Метод проводит инвентаризацию предметов у сотрудников.
     public void MakeInventory()
     {
         // Проверяем, есть ли сорудники в компании.
         if (!HasEmployees())
         {
+            Console.WriteLine("В компании нет сотрудников, сначала добавьте сотрудника.");
             return;
         }
 
@@ -346,20 +368,14 @@ public class Company
     public bool HasEmployees()
     {
         // Если сотрудников нет, выводим сообщение на экран.
-        if (_employees.Count == 0)
-        {
-            Console.WriteLine("В компании нет сотрудников, сначала добавьте сотрудника.");
-            return false;
-        }
-
-        return true;
+        return _employees.Count != 0;
     }
 
     // Метод выводит на экран всех сотрудников компании.
     public void PrintAllEmployees()
     {
         // Проверяем наличие сотрудников в списке.
-        if (_employees.Count == 0)
+        if (!HasEmployees())
         {
             Console.WriteLine("Сотрудники отсутствуют в компании.");
         }
@@ -388,6 +404,18 @@ public class Company
     public bool IsRightInventoryIndex(int inventoryIndex)
     {
         return _storage.IsRightInventoryIndex(inventoryIndex);
+    }
+
+    // Метод возвращает сотрудника.
+    public Employee GetEmployee(int employeeIndex)
+    {
+        return _employees[employeeIndex];
+    }
+
+    // Метод обертка, вызывает метод получения инвентаря у склада. 
+    public Inventory GetInventory(int inventoryIndex)
+    {
+        return _storage.GetInventory(inventoryIndex);
     }
 }
 
@@ -418,7 +446,7 @@ public class Storage
     public void PrintAllInventories()
     {
         // Проверяем есть ли предметы на складе.
-        if (_inventories.Count == 0)
+        if (!HasInventories())
         {
             Console.WriteLine("На складе нет предметов.");
         }
@@ -441,17 +469,10 @@ public class Storage
     // Метод проверяет, есть ли в инветарь на складе.
     public bool HasInventories()
     {
-        // Если сотрудников нет, выводим сообщение на экран.
-        if (_inventories.Count == 0)
-        {
-            Console.WriteLine("На складе нет предметов, сначала добавьте предмет.");
-            return false;
-        }
-
-        return true;
+        return _inventories.Count != 0;
     }
 
-    // Метод выдает инвентарь со склада.
+    // Метод возвращает инвентарь со склада.
     public Inventory GetInventory(int inventoryIndex)
     {
         // Получаем инвентарь по индексу.
