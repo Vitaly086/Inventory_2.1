@@ -12,7 +12,6 @@ public class Program
     }
 
     // Метод показывающий меню действий.
-
     private static void ShowSelectionMenu(Company company)
     {
         // В бесконечном цикле будем принимать запросы и отвечать на них.
@@ -33,7 +32,6 @@ public class Program
     }
 
     // Метод определяющий, какое действие выполнять.
-
     private static void ProcessSelectedMenuAction(MainMenuChoice userChoice, Company company)
     {
         // В зависимости от выбора пользователя - вызываем нужный метод.
@@ -376,15 +374,18 @@ public class Company
     // Метод проводит инвентаризацию предметов у сотрудников.
     public void MakeInventory()
     {
+        // Создаем переменную для хранения текста сообщения.
+        string message;
+        
         // Проверяем, есть ли сорудники в компании.
         if (!HasEmployees())
         {
             // Записываем сообщение в переменную.
-            var hasNotEmployeesMessage = "В компании нет сотрудников, сначала добавьте сотрудника.";
+            message = "В компании нет сотрудников, сначала добавьте сотрудника.";
             // Выводим сообщение на экран.
-            Console.WriteLine(hasNotEmployeesMessage);
+            Console.WriteLine(message);
             // Записываем сообщение в файл.
-            FileWriter.WriteLine(hasNotEmployeesMessage);
+            FileWriter.WriteLine(message);
             return;
         }
 
@@ -394,23 +395,21 @@ public class Company
             if (!employee.HasInventory())
             {
                 // Записываем сообщение в переменную.
-                var employeeNotHasInventoryMessage =
-                    $"Сотрудник {employee.Name}, должность {employee.JobTitle}, предметы не получал.";
+                message = $"Сотрудник {employee.Name}, должность {employee.JobTitle}, предметы не получал.";
                 // Выводим сообщение на экран.
-                Console.WriteLine(employeeNotHasInventoryMessage);
+                Console.WriteLine(message);
                 // Записываем сообщение в файл.
-                FileWriter.WriteLine(employeeNotHasInventoryMessage);
+                FileWriter.WriteLine(message);
                 // Пропускаем иттерацию в цикле.
                 continue;
             }
 
             // Записываем сообщение в переменную.
-            var employeeHasInventoryMessage =
-                $"Сотрудник {employee.Name}, должность {employee.JobTitle}, получил следующие предметы:";
+            message = $"Сотрудник {employee.Name}, должность {employee.JobTitle}, получил следующие предметы:";
             // Выводим сообщение на экран.
-            Console.WriteLine(employeeHasInventoryMessage);
+            Console.WriteLine(message);
             // Записываем сообщение в файл.
-            FileWriter.WriteLine(employeeHasInventoryMessage);
+            FileWriter.WriteLine(message);
             // Выводим на экран предметы выданные сотруднику.
             employee.PrintInventory();
             Console.WriteLine();
@@ -580,11 +579,11 @@ public class Employee
         for (var i = 0; i < _inventories.Count; i++)
         {
             // Индекса для нумерации.
-            var indexMessage = $"{i + 1}. ";
+            var message = $"{i + 1}. ";
             // Выводим сообщение в консоль.
-            Console.Write(indexMessage);
+            Console.Write(message);
             // Записываем сообщение в файл.
-            FileWriter.Write(indexMessage);
+            FileWriter.Write(message);
             // Выводим данные инвентаря.
             _inventories[i].Print();
         }
@@ -627,11 +626,11 @@ public abstract class Inventory
     public virtual void Print()
     {
         // Сохраняем сообщение в переменну.
-        var inventoryNameMessage = $"Предмет: {Name}. ";
+        var message = $"Предмет: {Name}. ";
         // Выводим сообщение в консоль.
-        Console.Write(inventoryNameMessage);
+        Console.Write(message);
         // Записываем сообщение в файл.
-        FileWriter.Write(inventoryNameMessage);
+        FileWriter.Write(message);
     }
 }
 
@@ -657,11 +656,11 @@ public class Furniture : Inventory
         // Вызов базового метода класса.
         base.Print();
         // Сохраняем сообщение в переменну.
-        var furnitureInfoMessage = $"Цвет: {_color}, Инвентарный номер: {InventoryNumber}.";
+        var message = $"Цвет: {_color}, Инвентарный номер: {InventoryNumber}.";
         // Выводим сообщение в консоль.
-        Console.WriteLine(furnitureInfoMessage);
+        Console.WriteLine(message);
         // Записываем сообщение в файл.
-        FileWriter.WriteLine(furnitureInfoMessage);
+        FileWriter.WriteLine(message);
     }
 }
 
@@ -687,10 +686,10 @@ public class Technique : Inventory
         // Вызов базового метода класса.
         base.Print();
         // Сохраняем сообщение в переменну.
-        var techniqueInfoMessage = $"Модель: {_model}, Инвентарный номер: {InventoryNumber}.";
+        var message = $"Модель: {_model}, Инвентарный номер: {InventoryNumber}.";
         // Выводим сообщение в консоль.
-        Console.WriteLine(techniqueInfoMessage);
+        Console.WriteLine(message);
         // Записываем сообщение в файл.
-        FileWriter.WriteLine(techniqueInfoMessage);
+        FileWriter.WriteLine(message);
     }
 }
