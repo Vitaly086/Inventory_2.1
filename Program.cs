@@ -580,6 +580,7 @@ public class Furniture : Inventory
     {
         // Вызов базового метода класса.
         base.Print();
+        // Выводим сообщение.
         Console.WriteLine($"Цвет: {_color}, Инвентарный номер: {InventoryNumber}.");
     }
 }
@@ -603,6 +604,7 @@ public class Technique : Inventory
     {
         // Вызов базового метода класса.
         base.Print();
+        // Выводим сообщение.
         Console.WriteLine($"Модель: {_model}, Инвентарный номер: {InventoryNumber}.");
     }
 }
