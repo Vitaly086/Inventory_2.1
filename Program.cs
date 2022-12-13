@@ -207,7 +207,8 @@
     private static Employee ChooseEmployee(Company company)
     {
         Console.WriteLine("Выберите сотрудника, которому выдадут предмет:");
-
+       
+        // Переменная для хранения индекса сотрудника.
         int employeeIndex;
         // Бесконечный цикл, для выбора индекса сотрудника.
         while (true)
@@ -228,7 +229,7 @@
             Console.WriteLine("Номер сотрудника выбран не верно, выберите еще раз.");
         }
 
-        // Возвращаем индекс сотрудника.
+        // Возвращаем сотрудника.
         return company.GetEmployee(employeeIndex);
     }
 
