@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-public class Program
+﻿public class Program
 {
     static void Main(string[] args)
     {
@@ -205,11 +203,12 @@ public class Program
         return employee;
     }
 
-    // Метод получает индекс сотрудника.
+    // Метод выбирает сотрудника.
     private static Employee ChooseEmployee(Company company)
     {
         Console.WriteLine("Выберите сотрудника, которому выдадут предмет:");
-
+       
+        // Переменная для хранения индекса сотрудника.
         int employeeIndex;
         // Бесконечный цикл, для выбора индекса сотрудника.
         while (true)
@@ -230,15 +229,16 @@ public class Program
             Console.WriteLine("Номер сотрудника выбран не верно, выберите еще раз.");
         }
 
-        // Возвращаем индекс сотрудника.
+        // Возвращаем сотрудника.
         return company.GetEmployee(employeeIndex);
     }
 
-    // Метод выбирает индекс инвентаря.
+    // Метод выбирает инвентарь.
     private static Inventory ChooseInventory(Company company)
     {
         Console.WriteLine("Выберите предмет:");
 
+        // Переменная для хранения индекса инвентаря.
         int inventoryIndex;
         // Бесконечный цикл, для выбора индекса инвентаря.
         while (true)
@@ -258,7 +258,7 @@ public class Program
             Console.WriteLine("Номер предмета выбран не верно, выберите еще раз.");
         }
 
-        // Возвращаем индекс инвентаря.
+        // Возвращаем инвентарь.
         return company.GetInventory(inventoryIndex);
     }
 }
