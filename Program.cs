@@ -1,4 +1,6 @@
-﻿public class Program
+﻿using System.Text;
+
+public class Program
 {
     static void Main(string[] args)
     {
@@ -20,7 +22,7 @@
             Console.WriteLine("1 - Добавить инвентарь на склад компании.\n" +
                               "2 - Добавить сотрудника в компанию.\n" +
                               "3 - Выдать сотруднику инвентарь.\n" +
-                              "4 - Провести инвентаризацию.\n");
+                              "4 - Провести инвентаризацию и сохранить информацию в файл.\n");
 
             // Считываем выбор пользователя.
             var userChoice = Convert.ToInt32(Console.ReadLine());
@@ -292,6 +294,52 @@ public enum EmployeeChoice
 }
 
 /// <summary>
+/// Класс отвечающий за запись информации в файл.
+/// </summary>
+public static class FileWriter
+{
+    // Константа для сохранения названия файла.
+    private const string FILE_NAME = "inventory.txt";
+    // Путь к файлу.
+    private static string _filePath;
+
+
+    //Статический конструктор, вызвается один раз при первом обращении к полю/методу класса, создает файл.
+    static FileWriter()
+    {
+        // Записываем путь к файлу, используя базовую директорию и имя файла.
+        _filePath = AppContext.BaseDirectory + "\\" + FILE_NAME;
+        // Создаем новый файл.
+        var file = File.Create(_filePath);
+        // Закрываем файл.
+        file.Close();
+    }
+
+    // Метод записывает текст в файл/ 
+    public static void Write(string text)
+    {
+        //Создаем объект типа StreamWriter, который добавляет текст в файл.
+        StreamWriter writer = File.AppendText(_filePath);
+        // Записываем в файл строку. 
+        writer.Write(text);
+        //  Закрываем считываемый файл.
+        writer.Close();
+    }
+
+    // Метод записывает текст в файл с новой строки.
+    public static void WriteLine(string text)
+    {
+        //Создаем объект типа StreamWriter, который добавляет текст в файл.
+        StreamWriter writer = File.AppendText(_filePath);
+        // Записываем в файл строку, после записи добавляем в файл символ окончания строки.
+        writer.WriteLine(text);
+        //  Закрываем считываемый файл.
+        writer.Close();
+    }
+}
+
+
+/// <summary>
 /// Класс Компания содержит склад и список сотрудников.
 /// Выдает сотрудникам инвентарь, проводит инвентаризацию.
 /// </summary>
@@ -330,10 +378,18 @@ public class Company
     // Метод проводит инвентаризацию предметов у сотрудников.
     public void MakeInventory()
     {
+        // Создаем переменную для хранения текста сообщения.
+        string message;
+
         // Проверяем, есть ли сорудники в компании.
         if (!HasEmployees())
         {
-            Console.WriteLine("В компании нет сотрудников, сначала добавьте сотрудника.");
+            // Записываем сообщение в переменную.
+            message = "В компании нет сотрудников, сначала добавьте сотрудника.";
+            // Выводим сообщение на экран.
+            Console.WriteLine(message);
+            // Записываем сообщение в файл.
+            FileWriter.WriteLine(message);
             return;
         }
 
@@ -342,18 +398,26 @@ public class Company
             // Проверяем, выдан ли сотруднику предмет.
             if (!employee.HasInventory())
             {
-                // Если не выдан выводим сообщение на экран.
-                Console.WriteLine($"Сотрудник {employee.Name}, должность {employee.JobTitle}, предметы не получал.");
+                // Записываем сообщение в переменную.
+                message = $"Сотрудник {employee.Name}, должность {employee.JobTitle}, предметы не получал.";
+                // Выводим сообщение на экран.
+                Console.WriteLine(message);
+                // Записываем сообщение в файл.
+                FileWriter.WriteLine(message);
                 // Пропускаем иттерацию в цикле.
                 continue;
             }
 
-            // Выводим на экран сотрудника и его должность.
-            Console.WriteLine(
-                $"Сотрудник {employee.Name}, должность {employee.JobTitle}, получил следующие предметы: ");
+            // Записываем сообщение в переменную.
+            message = $"Сотрудник {employee.Name}, должность {employee.JobTitle}, получил следующие предметы:";
+            // Выводим сообщение на экран.
+            Console.WriteLine(message);
+            // Записываем сообщение в файл.
+            FileWriter.WriteLine(message);
             // Выводим на экран предметы выданные сотруднику.
             employee.PrintInventory();
             Console.WriteLine();
+            FileWriter.WriteLine("");
         }
     }
 
@@ -514,8 +578,12 @@ public class Employee
     {
         for (var i = 0; i < _inventories.Count; i++)
         {
-            // Вывод индекса для нумерации.
-            Console.Write($"{i + 1}. ");
+            // Индекса для нумерации.
+            var message = $"{i + 1}. ";
+            // Выводим сообщение в консоль.
+            Console.Write(message);
+            // Записываем сообщение в файл.
+            FileWriter.Write(message);
             // Выводим данные инвентаря.
             _inventories[i].Print();
         }
@@ -555,7 +623,12 @@ public abstract class Inventory
     // Виртуальный метод выводит базовую информацию об инвентаре.
     public virtual void Print()
     {
-        Console.Write($"Предмет: {Name}. ");
+        // Сохраняем сообщение в переменну.
+        var message = $"Предмет: {Name}. ";
+        // Выводим сообщение в консоль.
+        Console.Write(message);
+        // Записываем сообщение в файл.
+        FileWriter.Write(message);
     }
 }
 
@@ -578,7 +651,12 @@ public class Furniture : Inventory
     {
         // Вызов базового метода класса.
         base.Print();
-        Console.WriteLine($"Цвет: {_color}, Инвентарный номер: {InventoryNumber}.");
+        // Сохраняем сообщение в переменну.
+        var message = $"Цвет: {_color}, Инвентарный номер: {InventoryNumber}.";
+        // Выводим сообщение в консоль.
+        Console.WriteLine(message);
+        // Записываем сообщение в файл.
+        FileWriter.WriteLine(message);
     }
 }
 
@@ -601,6 +679,11 @@ public class Technique : Inventory
     {
         // Вызов базового метода класса.
         base.Print();
-        Console.WriteLine($"Модель: {_model}, Инвентарный номер: {InventoryNumber}.");
+        // Сохраняем сообщение в переменну.
+        var message = $"Модель: {_model}, Инвентарный номер: {InventoryNumber}.";
+        // Выводим сообщение в консоль.
+        Console.WriteLine(message);
+        // Записываем сообщение в файл.
+        FileWriter.WriteLine(message);
     }
 }
