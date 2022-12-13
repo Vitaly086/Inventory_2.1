@@ -203,7 +203,7 @@
         return employee;
     }
 
-    // Метод получает индекс сотрудника.
+    // Метод выбирает сотрудника.
     private static Employee ChooseEmployee(Company company)
     {
         Console.WriteLine("Выберите сотрудника, которому выдадут предмет:");
@@ -232,11 +232,12 @@
         return company.GetEmployee(employeeIndex);
     }
 
-    // Метод выбирает индекс инвентаря.
+    // Метод выбирает инвентарь.
     private static Inventory ChooseInventory(Company company)
     {
         Console.WriteLine("Выберите предмет:");
 
+        // Переменная для хранения индекса инвентаря.
         int inventoryIndex;
         // Бесконечный цикл, для выбора индекса инвентаря.
         while (true)
@@ -256,7 +257,7 @@
             Console.WriteLine("Номер предмета выбран не верно, выберите еще раз.");
         }
 
-        // Возвращаем индекс инвентаря.
+        // Возвращаем инвентарь.
         return company.GetInventory(inventoryIndex);
     }
 }
