@@ -303,31 +303,37 @@ public static class FileWriter
     // Путь к файлу.
     private static string _filePath;
 
-    //Статический конструктор, вызвается один раз, создает файл.
+
+    //Статический конструктор, вызвается один раз при первом обращении к полю/методу класса, создает файл.
     static FileWriter()
     {
         // Записываем путь к файлу, используя базовую директорию и имя файла.
         _filePath = AppContext.BaseDirectory + "\\" + FILE_NAME;
         // Создаем новый файл.
-        var file = new FileStream(_filePath, FileMode.Create, FileAccess.ReadWrite);
+        var file = File.Create(_filePath);
         // Закрываем файл.
         file.Close();
     }
 
-
     // Метод записывает текст в файл/ 
     public static void Write(string text)
     {
-        var writer = File.AppendText(_filePath);
+        //Создаем объект типа StreamWriter, который добавляет текст в файл.
+        StreamWriter writer = File.AppendText(_filePath);
+        // Записываем в файл строку. 
         writer.Write(text);
+        //  Закрываем считываемый файл.
         writer.Close();
     }
 
-    // Метод записывает текст в файл с новой сnроки.
+    // Метод записывает текст в файл с новой строки.
     public static void WriteLine(string text)
     {
-        var writer = File.AppendText(_filePath);
+        //Создаем объект типа StreamWriter, который добавляет текст в файл.
+        StreamWriter writer = File.AppendText(_filePath);
+        // Записываем в файл строку, после записи добавляем в файл символ окончания строки.
         writer.WriteLine(text);
+        //  Закрываем считываемый файл.
         writer.Close();
     }
 }
@@ -374,7 +380,7 @@ public class Company
     {
         // Создаем переменную для хранения текста сообщения.
         string message;
-        
+
         // Проверяем, есть ли сорудники в компании.
         if (!HasEmployees())
         {
