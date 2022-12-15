@@ -131,59 +131,63 @@
 
         // Считываем выбор пользователя.
         var inventoryChoice = (InventoryChoice) Convert.ToInt32(Console.ReadLine());
-        // Выходим, если пользователь выбрал даннйы кейс.
-        if (inventoryChoice == InventoryChoice.Exit)
+
+        switch (inventoryChoice)
         {
-            return;
-        }
-
-        // Создаем новый инвентарь.
-        var inventory = CreateInventory(inventoryChoice);
-
-        // Компании добавляем новый инвентарь.
-        company.AddInventory(inventory);
-    }
-
-    // Метод создает новый инветарь.
-    private static Inventory CreateInventory(InventoryChoice choice)
-    {
-        // Создаем пустую переменную типа Инвентарь, чтобы записать в нее новый ивентарь.
-        Inventory inventory = null;
-        switch (choice)
-        {
-            // Кейс создания инвентаря - Мебель.
+            // Кейс создания инвентаря типа Мебель.
             case InventoryChoice.Furniture:
-                Console.WriteLine("Введите название мебели.");
-                // Пользователь вводит имя мебели.
-                var furnitureName = Console.ReadLine();
-                Console.WriteLine("Введите цвет мебели.");
-                // Пользователь вводит цвет мебели.
-                var color = Console.ReadLine();
-                // Создаем объект класса Мебель.
-                inventory = new Furniture(furnitureName, color);
+                // Создаем инвентарь типа мебель.
+                var furniture = CreateFurniture();
+                // Компании добавляем новый инвентарь.
+                company.AddInventory(furniture);
                 break;
 
-            // Кейс создания инвентаря - Техника.
+            // Кейс создания инвентаря типа Техника.
             case InventoryChoice.Technique:
-                Console.WriteLine("Введите название техники.");
-                // Пользователь вводит имя техники.
-                var techniqueName = Console.ReadLine();
-                Console.WriteLine("Введите модель техники.");
-                // Пользователь вводит модель техники.
-                var model = Console.ReadLine();
-                // Создаем объект класса Техника.
-                inventory = new Technique(techniqueName, model);
+                // Создаем инвентарь типа техника.
+                var technique = CreateTechnique();
+                // Компании добавляем новый инвентарь.
+                company.AddInventory(technique);
                 break;
 
+            // Выходим, если пользователь выбрал даннйы кейс.
+            case InventoryChoice.Exit:
+                return;
+            
             // Кейс по умолчанию, в случае неправильного ввода.
             default:
+            {
                 Console.WriteLine($"Неверный запрос.\n" +
                                   $"Возврат в основное меню.\n");
                 break;
+            }
         }
+    }
 
-        // Возвращаем объект класса Инветарь.
-        return inventory;
+    // Метод создает новый инветарь типа мебель.
+    private static Inventory CreateFurniture()
+    {
+        Console.WriteLine("Введите название мебели.");
+        // Пользователь вводит имя мебели.
+        var furnitureName = Console.ReadLine();
+        Console.WriteLine("Введите цвет мебели.");
+        // Пользователь вводит цвет мебели.
+        var color = Console.ReadLine();
+        // Возвращаем новый объект класса Мебель.
+        return new Furniture(furnitureName, color);
+    }
+
+    // Метод создает новый инветарь типа техника.
+    private static Inventory CreateTechnique()
+    {
+        Console.WriteLine("Введите название техники.");
+        // Пользователь вводит имя техники.
+        var techniqueName = Console.ReadLine();
+        Console.WriteLine("Введите модель техники.");
+        // Пользователь вводит модель техники.
+        var model = Console.ReadLine();
+        // Возвращаем новый объект класса Техника.
+        return new Technique(techniqueName, model);
     }
 
     // Метод создает нового сотрудника.
@@ -207,7 +211,7 @@
     private static Employee ChooseEmployee(Company company)
     {
         Console.WriteLine("Выберите сотрудника, которому выдадут предмет:");
-       
+
         // Переменная для хранения индекса сотрудника.
         int employeeIndex;
         // Бесконечный цикл, для выбора индекса сотрудника.
